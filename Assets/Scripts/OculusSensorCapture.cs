@@ -10,11 +10,9 @@ public class OculusSensorCapture : MonoBehaviour
     private StreamWriter logWriter;
     private bool isLogging = false;
 
-    private (string, string)[] activities = {("STD", "Standing"), ("SIT", "Sitting"),
-        ("JOG", "Jogging"), ("ARC", "Arm circles"), ("STR", "Arms stretching"), ("DRI", "Driving"),
-        ("TWS", "Twisting")};
+    private (string, string)[] users = {("CAR", "Carolyn"), ("QUI", "Quinn"), ("URU", "Urunna")}
 
-    private int curActivityIdx = 0;
+    private int curUserIdx = 0;
 
     private int curTrial = 0;
 
@@ -35,7 +33,7 @@ public class OculusSensorCapture : MonoBehaviour
     /// </summary>
     string GetDataFilePrefix()
     {
-        return activities[curActivityIdx].Item1;
+        return users[curUserIdx].Item1;
     }
 
     void StartLogging()
@@ -128,13 +126,13 @@ public class OculusSensorCapture : MonoBehaviour
         // and refresh the number of collected data files on the UI
         if (frontTriggerPressed)
         {
-            curActivityIdx = (curActivityIdx + 1) % activities.Length;
+            curUserIdx = (curUserIdx + 1) % activities.Length;
             curTrial = GetNumExistingDataFiles();
             SendImpulse(0.1f, 0.05f);
         }
 
         // Change the wall UI text
-        wallStatusText.text = $"Activity: {activities[curActivityIdx].Item2}\n" +
+        wallStatusText.text = $"User: {users[curUserIdx].Item2}\n" +
             $"Last trial: {curTrial}";
 
         // Toggle logging on/off
