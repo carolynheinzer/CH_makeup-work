@@ -26,37 +26,36 @@ if 'Train' not in dir_list:
 # choose unique random files from each group member
 i = 0   # counter
 used = []   # list to keep track of which files have been added to a dataset
-for j in range(0, 2):
-    while (0 <= i < 8):
-        # actual random choice
-        if (j == 0):
-             curr_dir = "Carolyn_data"
-        elif (j == 1):
-             curr_dir = "Quinn_data"
-        elif (j == 2):  
-             curr_dir = "Urunna_data"
-        # print(f)
+directories = ["Carolyn_data", "Quinn_data", "Urunna_data"]
 
-        f = random.choice(os.listdir(curr_dir))
+while (0 <= i < 27):
+    if (0 <= i < 10):
+        curr_dir = "Carolyn_data"
+    elif (10 <= i < 18):
+        curr_dir = "Quinn_data"
+    elif (18 <= i < 27):
+        curr_dir = "Urunna_data"
 
-        if f not in used:
 
-            # move the file to "Validation"; can just use the original name now
-            src = os.getcwd() + "/" + curr_dir + "/" + f
-            dst = os.getcwd() + "/Validation/" + curr_dir[0:3].upper() + f[3:]
-            os.rename(src, dst)
+    f = random.choice(os.listdir(curr_dir))
 
-            # add file name to used list (overall and this smaller one)
-            used.append(f)
-            i += 1  
+    if f not in used:
+        # move the file to "Validation" + label it
+        src = os.getcwd() + "/" + curr_dir + "/" + f
+        dst = os.getcwd() + "/Validation/" + curr_dir[:3].upper() + f[3:]
+        os.rename(src, dst)
+
+        # add file name to used list (overall and this smaller one)
+        used.append(f)
+        i += 1  
 
 # put the remaining files from "Labeled" into the Train set
-for name in ("Carolyn_data", "Quinn_data", "Urunna_data"):
-    for f in (os.listdir(name)):
+for directory in directories:
+    for f in (os.listdir(directory)):
 
-            # move the file to "Train"; can just use the original name now
-            src = os.getcwd() + "/" + name + "/" + f
-            dst = os.getcwd() + "/Train/" + name[0:3].upper() + f[3:]
+            # move the file to "Train" + label it
+            src = os.getcwd() + "/" + directory + "/" + f
+            dst = os.getcwd() + "/Train/" + directory[:3].upper() + f[3:]
             os.rename(src, dst)
 
             # add file name to used list 
