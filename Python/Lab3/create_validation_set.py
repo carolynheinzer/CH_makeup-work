@@ -43,7 +43,7 @@ for j in range(0, 2):
 
             # move the file to "Validation"; can just use the original name now
             src = os.getcwd() + "/" + curr_dir + "/" + f
-            dst = os.getcwd() + "/Validation/" + f
+            dst = os.getcwd() + "/Validation/" + curr_dir[0:3].upper() + f[3:]
             os.rename(src, dst)
 
             # add file name to used list (overall and this smaller one)
@@ -56,7 +56,7 @@ for name in ("Carolyn_data", "Quinn_data", "Urunna_data"):
 
             # move the file to "Train"; can just use the original name now
             src = os.getcwd() + "/" + name + "/" + f
-            dst = os.getcwd() + "/Train/" + f
+            dst = os.getcwd() + "/Train/" + name[0:3].upper() + f[3:]
             os.rename(src, dst)
 
             # add file name to used list 
