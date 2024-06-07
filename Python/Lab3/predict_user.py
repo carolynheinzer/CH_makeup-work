@@ -12,6 +12,8 @@ import sys
 import matplotlib
 matplotlib.use('Agg')
 from sklearn.preprocessing import StandardScaler
+from sklearn import metrics
+import numpy
 from sklearn.metrics import classification_report
 
 def extract(file_name: str, test_train: int):
@@ -390,6 +392,7 @@ def predict_shallow(sensor_data: str) -> str:
             lst_ipt.append(val)
 
     user = dtree.predict([lst_ipt])     
+    # print(dtree.predict_proba([lst_ipt]))
 
     result = 100    # garbage value
 
@@ -404,9 +407,35 @@ def predict_shallow(sensor_data: str) -> str:
 
 # print(predict_shallow("Data/Lab3/Validation/CAR_01.csv"))
 
+def confusion_matrix():
+    # accuracy and precision reports
+    val_files = os.listdir("Data/Lab3/Validation")
+    # print(val_files)
+    combine_files(val_files, "val_data_summary.csv", 2)
+
+    pred = []
+    actual = []
+
+    for file in val_files:
+        pred.append(predict_shallow("Data/Lab3/Validation/" + file))
+        actual.append(file[0:3])
+
+    """print("actual:")
+    print(actual)
+    print("predicted:")
+    print(pred)"""
+    
+    confusion_matrix = metrics.confusion_matrix(actual, pred)
+    # accuracy = metrics.accuracy_score(actual, pred)
+
+    print("confusion matrix:")
+    print(confusion_matrix)
+    print("accuracy: " + str(accuracy))
+
 def calc_accuracy():
     # accuracy and precision reports
     val_files = os.listdir("Data/Lab3/Validation")
+    # print(val_files)
     combine_files(val_files, "val_data_summary.csv", 2)
 
     test = []
@@ -416,11 +445,13 @@ def calc_accuracy():
         test.append(predict_shallow("Data/Lab3/Validation/" + file))
         pred.append(file[0:3])
 
+    # print(pred)
+
     # convert to ints
     test_vals = []
     pred_vals = []
 
-    for arr in test, pred:
+    """for arr in test, pred:
         for el in arr:
             if ("CAR" in el):
                 test_vals.append(0)
@@ -430,10 +461,26 @@ def calc_accuracy():
                 pred_vals.append(1)
             elif ("URU" in el):
                 test_vals.append(2)
-                pred_vals.append(2)
+                pred_vals.append(2)"""
+    
+    for el in test:
+        if ("CAR" in el):
+            test_vals.append(0)
+        elif ("QUI" in el):
+            test_vals.append(1)
+        elif ("URU" in el):
+            test_vals.append(2)
+
+    for el in pred:
+        if ("CAR" in el):
+            pred_vals.append(0)
+        elif ("QUI" in el):
+            pred_vals.append(1)
+        elif ("URU" in el):
+            pred_vals.append(2)
             
     target_names = ["CAR", "QUI", "URU"]
-    print(classification_report(pred_vals, test_vals, target_names=target_names))
+    print(classification_report(pred_vals, test_vals))
 
 def predict_shallow_folder(data_folder: str, output: str):
     # Run the model's prediction on all the sensor data in data_folder, writing labels
@@ -484,4 +531,5 @@ if __name__ == "__main__":
     elif args.label_folder:
         predict_shallow_folder(args.label_folder, args.output)
 
+    confusion_matrix()
     calc_accuracy()
