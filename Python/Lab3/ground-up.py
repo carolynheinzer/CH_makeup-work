@@ -327,7 +327,7 @@ def create_dtree(train_file: str):
     X = df[features].values
     y  = df['user']
 
-    dtree = DecisionTreeClassifier(criterion='gini', max_depth=2, min_samples_leaf=10, min_samples_split=20)
+    dtree = DecisionTreeClassifier(criterion='gini', max_depth=1, min_samples_leaf=10, min_samples_split=20)
     dtree.fit(X, y)
     return dtree
 

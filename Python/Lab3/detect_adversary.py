@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import csv
 from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV
 import sys
 import matplotlib
 matplotlib.use('Agg')
@@ -338,8 +339,6 @@ def combine_files(dir: str, file_out: str, code: int):
     # files = os.listdir(dir)
     data_dicts = []
 
-
-    # for file in files:
     for file in dir:
         data_dict = preprocess(file, code)
         data_dicts.append(data_dict)
@@ -359,7 +358,52 @@ def combine_files(dir: str, file_out: str, code: int):
         writer.writeheader()
         writer.writerows(data_dicts)
 
-# combine_files("Data/Lab3/Train", "lab3_data_summary.csv", 0)
+# combine_files("Data/Lab3/Train", "combined.csv", 0)
+
+def find_best_size(file_name: str):
+    d = {'CAR': 0, 'QUI': 1, "URU": 2}
+    df = pandas.read_csv(file_name)
+
+    df['user'] = df['user'].map(d)
+
+    # separate feature columns from target column
+    features = ['peaks_headset_vel_x', 'peaks_headset_vel_y', 'peaks_headset_vel_z', 'peaks_headset_angularVel_x', 'peaks_headset_angularVel_y', 'peaks_headset_angularVel_z', 'peaks_headset_pos_x', 'peaks_headset_pos_y', 'peaks_headset_pos_z', 'peaks_headset_rot_x', 'peaks_headset_rot_y', 'peaks_headset_rot_z', 'peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'peaks_controller_left_angularVel_x', 'peaks_controller_left_angularVel_y', 'peaks_controller_left_angularVel_z', 'peaks_controller_left_pos_x', 'peaks_controller_left_pos_y', 'peaks_controller_left_pos_z', 'peaks_controller_left_rot_x', 'peaks_controller_left_rot_y', 'peaks_controller_left_rot_z', 'peaks_controller_right_vel_x', 'peaks_controller_right_vel_y', 'peaks_controller_right_vel_z', 'peaks_controller_right_angularVel_x', 'peaks_controller_right_angularVel_y', 'peaks_controller_right_angularVel_z', 'peaks_controller_right_pos_x', 'peaks_controller_right_pos_y', 'peaks_controller_right_pos_z', 'peaks_controller_right_rot_x', 'peaks_controller_right_rot_y', 'mean_headset_vel_x', 'mean_headset_vel_y', 'mean_headset_vel_z', 'mean_headset_angularVel_x', 'mean_headset_angularVel_y', 'mean_headset_angularVel_z', 'mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z', 'mean_headset_rot_x', 'mean_headset_rot_y', 'mean_headset_rot_z', 'mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z', 'mean_controller_left_angularVel_x', 'mean_controller_left_angularVel_y', 'mean_controller_left_angularVel_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'mean_controller_left_rot_x', 'mean_controller_left_rot_y', 'mean_controller_left_rot_z', 'mean_controller_right_vel_x', 'mean_controller_right_vel_y', 'mean_controller_right_vel_z', 'mean_controller_right_angularVel_x', 'mean_controller_right_angularVel_y', 'mean_controller_right_angularVel_z', 'mean_controller_right_pos_x', 'mean_controller_right_pos_y', 'mean_controller_right_pos_z', 'mean_controller_right_rot_x', 'mean_controller_right_rot_y', 'std_headset_vel_x', 'std_headset_vel_y', 'std_headset_vel_z', 'std_headset_angularVel_x', 'std_headset_angularVel_y', 'std_headset_angularVel_z', 'std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z', 'std_headset_rot_x', 'std_headset_rot_y', 'std_headset_rot_z', 'std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z', 'std_controller_left_angularVel_x', 'std_controller_left_angularVel_y', 'std_controller_left_angularVel_z', 'std_controller_left_pos_x', 'std_controller_left_pos_y', 'std_controller_left_pos_z', 'std_controller_left_rot_x', 'std_controller_left_rot_y', 'std_controller_left_rot_z', 'std_controller_right_vel_x', 'std_controller_right_vel_y', 'std_controller_right_vel_z', 'std_controller_right_angularVel_x', 'std_controller_right_angularVel_y', 'std_controller_right_angularVel_z', 'std_controller_right_pos_x', 'std_controller_right_pos_y', 'std_controller_right_pos_z', 'std_controller_right_rot_x', 'std_controller_right_rot_y']
+
+    X = df[features].values
+    y = df['user']
+
+    dtree = DecisionTreeClassifier()
+
+    path = dtree.cost_complexity_pruning_path(X, y)
+    alphas, impurities = path.ccp_alphas, path.impurities
+
+    param_grid = {'ccp_alpha': alphas}
+
+    grid_search = GridSearchCV(dtree, param_grid, cv=5)
+    grid_search.fit(X, y)
+
+    best_alpha = grid_search.best_params_['ccp_alpha']
+    print(best_alpha)
+
+    """# Define the parameter grid
+    param_grid = {'criterion':["gini","entropy"],
+    'max_depth': [2, 3, 4, 5],
+    'min_samples_leaf': [10, 20, 30],
+    'min_samples_split': [20, 30, 40]}
+
+    dtree = DecisionTreeClassifier()
+
+    # instance of the GridSearchCV
+    grid_search = GridSearchCV(dtree, param_grid, cv=5)
+
+    # Fit the GridSearchCV to the data
+    grid_search.fit(X, y)
+
+    # Print the best set of hyperparameters
+    print("Best hyperparameters: ", grid_search.best_params_)"""
+
+# find_best_size("lab3_data_summary.csv")
+# Best hyperparameters:  {'criterion': 'gini', 'max_depth': 5, 'min_samples_leaf': 10, 'min_samples_split': 20}
 
 def create_dtree(file_name: str):
     # create dataframe and ensure all data is numbers
@@ -374,8 +418,10 @@ def create_dtree(file_name: str):
     X = df[features].values
     y = df['user']
 
+    # from GridSearchCV: {'criterion': 'gini', 'max_depth': 5, 'min_samples_leaf': 10, 'min_samples_split': 20}
     dtree = DecisionTreeClassifier(criterion='gini', max_depth=1, min_samples_leaf=10, min_samples_split=20)
-    dtree = dtree.fit(X, y)
+    # dtree = DecisionTreeClassifier(random_state=0, ccp_alpha=0.0)
+    dtree.fit(X, y)
     return dtree
 
 # create_dtree("combined.csv")
@@ -393,7 +439,10 @@ def predict_shallow(sensor_data: str) -> str:
         if (key != 'user'):
             lst_ipt.append(val)
 
-    user = dtree.predict([lst_ipt])     
+    # print(lst_ipt)
+
+    user = dtree.predict([lst_ipt])    
+    # sklearn.neighbors.KNeighborsClassifier(n_neighbors=3) 
     print(dtree.predict_proba([lst_ipt]))
 
     result = 100    # garbage value
@@ -409,118 +458,21 @@ def predict_shallow(sensor_data: str) -> str:
 
 # print(predict_shallow("Data/Lab3/Validation/CAR_01.csv"))
 
-def confusion_matrix():
-    # accuracy and precision reports
-    val_files = os.listdir("Data/Lab3/Validation")
-    # print(val_files)
-    combine_files(val_files, "val_data_summary.csv", 2)
-
-    pred = []
-    actual = []
-
-    for file in val_files:
-        pred.append(predict_shallow("Data/Lab3/Validation/" + file))
-        actual.append(file[0:3])
-
-    """print("actual:")
-    print(actual)
-    print("predicted:")
-    print(pred)"""
-    
-    confusion_matrix = metrics.confusion_matrix(actual, pred)
-    # accuracy = metrics.accuracy_score(actual, pred)
-
-    print("confusion matrix:")
-    print(confusion_matrix)
-    # print("accuracy: " + str(accuracy))
-
-def calc_accuracy():
-    # accuracy and precision reports
-    val_files = os.listdir("Data/Lab3/Validation")
-    # print(val_files)
-    combine_files(val_files, "val_data_summary.csv", 2)
-
-    test = []
-    pred = []
-
-    for file in val_files:
-        test.append(predict_shallow("Data/Lab3/Validation/" + file))
-        pred.append(file[0:3])
-
-    # print(pred)
-    set(test) - set(pred)
-
-    # convert to ints
-    test_vals = []
-    pred_vals = []
-    
-    for el in test:
-        if ("CAR" in el):
-            test_vals.append(0)
-        elif ("QUI" in el):
-            test_vals.append(1)
-        elif ("URU" in el):
-            test_vals.append(2)
-
-    for el in pred:
-        if ("CAR" in el):
-            pred_vals.append(0)
-        elif ("QUI" in el):
-            pred_vals.append(1)
-        elif ("URU" in el):
-            pred_vals.append(2)
-            
-    target_names = ["CAR", "QUI", "URU"]
-    # print(classification_report(pred_vals, test_vals))
-
 def predict_shallow_folder(data_folder: str, output: str):
     # Run the model's prediction on all the sensor data in data_folder, writing labels
     # in sequence to an output text file.
 
     # create data summary
-    """files = os.listdir("Data/Lab3/Train")
+    files = os.listdir("Data/Lab3/Train")
     out_file = "lab3_data_summary.csv"
-    combine_files(files, out_file, 0)"""
+    combine_files(files, out_file, 0)
 
     data_files = sorted(glob(f"{data_folder}/*.csv"))
-    # data_files = [f for f in data_files if 'data_summary' not in f]
+    data_files = [f for f in data_files if 'data_summary' not in f]
     labels = map(predict_shallow, data_files)
-
-    # actual values
-    # Data/Lab3/Validation/URU_29.csv
-    actual = []
-    for file in data_files:
-        print(file)
-        actual.append(file[21:24])
-
-    actual_vals = []
-
-    for el in actual:
-        if ("CAR" in el):
-            actual_vals.append(0)
-        elif ("QUI" in el):
-            actual_vals.append(1)
-        elif ("URU" in el):
-            actual_vals.append(2)
-
-    # predicted values
-    predicted_vals = []
-    for label in labels:
-        if ("CAR" in label):
-            predicted_vals.append(0)
-        elif ("QUI" in label):
-            predicted_vals.append(1)
-        elif ("URU" in label):
-            predicted_vals.append(2)
-
-    print(predicted_vals)
-    print(actual_vals)
 
     with open(output, "w+") as output_file:
         output_file.write("\n".join(labels))
-
-    target_names = ["CAR", "QUI", "URU"]
-    # print(classification_report(actual_vals, predicted_vals))
 
 
 if __name__ == "__main__":
@@ -543,7 +495,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--output",
         type=str,
-        default="Data/Lab3/shallow-lab3.txt",
+        default="Data/Lab3/adv-lab3.txt",
         help="Output filename of labels when running predictions on a directory",
     )
 
@@ -555,5 +507,5 @@ if __name__ == "__main__":
     elif args.label_folder:
         predict_shallow_folder(args.label_folder, args.output)
 
-    # confusion_matrix()
-    # calc_accuracy()
+    """confusion_matrix()
+    calc_accuracy()"""
