@@ -43,6 +43,27 @@ def extract(file_name: str, test_train: int):
     info['controller_left_vel_x'] = []
     info['controller_left_vel_y'] = []
     info['controller_left_vel_z'] = []
+    info['controller_left_angularVel_x'] = []
+    info['controller_left_angularVel_y'] = []
+    info['controller_left_angularVel_z'] = []
+    info['controller_left_pos_x'] = []
+    info['controller_left_pos_y'] = []
+    info['controller_left_pos_z'] = []
+    info['controller_left_rot_x'] = []
+    info['controller_left_rot_y'] = []
+    info['controller_left_rot_z'] = []
+    info['controller_right_vel_x'] = []
+    info['controller_right_vel_y'] = []
+    info['controller_right_vel_z'] = []
+    info['controller_right_angularVel_x'] = []
+    info['controller_right_angularVel_y'] = []
+    info['controller_right_angularVel_z'] = []
+    info['controller_right_pos_x'] = []
+    info['controller_right_pos_y'] = []
+    info['controller_right_pos_z'] = []
+    info['controller_right_rot_x'] = []
+    info['controller_right_rot_y'] = []
+    info['controller_right_rot_z'] = []
 
     # data: time,headset_vel.x,headset_vel.y,headset_vel.z,headset_angularVel.x,headset_angularVel.y,headset_angularVel.z,headset_pos.x,headset_pos.y,headset_pos.z,headset_rot.x,headset_rot.y,headset_rot.z,controller_left_vel.x,controller_left_vel.y,controller_left_vel.z,controller_left_angularVel.x,controller_left_angularVel.y,controller_left_angularVel.z,controller_left_pos.x,controller_left_pos.y,controller_left_pos.z,controller_left_rot.x,controller_left_rot.y,controller_left_rot.z,controller_right_vel.x,controller_right_vel.y,controller_right_vel.z,controller_right_angularVel.x,controller_right_angularVel.y,controller_right_angularVel.z,controller_right_pos.x,controller_right_pos.y,controller_right_pos.z,controller_right_rot.x,controller_right_rot.y,controller_right_rot.z
     # want time, controller_left_vel.x, controller_left_vel.y, controller_left_vel.z
@@ -56,11 +77,32 @@ def extract(file_name: str, test_train: int):
         info['controller_left_vel_x'].append(lst[13])
         info['controller_left_vel_y'].append(lst[14])
         info['controller_left_vel_z'].append(lst[15])
+        info['controller_left_angularVel_x'].append(lst[16])
+        info['controller_left_angularVel_y'].append(lst[17])
+        info['controller_left_angularVel_z'].append(lst[18])
+        info['controller_left_pos_x'].append(lst[19])
+        info['controller_left_pos_y'].append(lst[20])
+        info['controller_left_pos_z'].append(lst[21])
+        info['controller_left_rot_x'].append(lst[22])
+        info['controller_left_rot_y'].append(lst[23])
+        info['controller_left_rot_z'].append(lst[24])
+        info['controller_right_vel_x'].append(lst[25])
+        info['controller_right_vel_y'].append(lst[26])
+        info['controller_right_vel_z'].append(lst[27])
+        info['controller_right_angularVel_x'].append(lst[28])
+        info['controller_right_angularVel_y'].append(lst[29])
+        info['controller_right_angularVel_z'].append(lst[30])
+        info['controller_right_pos_x'].append(lst[31])
+        info['controller_right_pos_y'].append(lst[32])
+        info['controller_right_pos_z'].append(lst[33])
+        info['controller_right_rot_x'].append(lst[34])
+        info['controller_right_rot_y'].append(lst[35])
+        info['controller_right_rot_z'].append(lst[36])
 
     f.close()
     return info
 
-"""car01 = extract("CAR_01.csv")
+"""car01 = extract("CAR_01.csv", 0)
 for key, val in car01.items():
     print(key, val)"""
 
@@ -78,15 +120,78 @@ def preprocess(file_name: str, test_train: int):
     controller_left_vel_x = list(map(float, info['controller_left_vel_x']))
     controller_left_vel_y = list(map(float, info['controller_left_vel_y']))
     controller_left_vel_z = list(map(float, info['controller_left_vel_z']))
+    controller_left_angularVel_x = list(map(float, info['controller_left_angularVel_x']))
+    controller_left_angularVel_y = list(map(float, info['controller_left_angularVel_y']))
+    controller_left_angularVel_z = list(map(float, info['controller_left_angularVel_z']))
+    controller_left_pos_x = list(map(float, info['controller_left_pos_x']))
+    controller_left_pos_y = list(map(float, info['controller_left_pos_y']))
+    controller_left_pos_z = list(map(float, info['controller_left_pos_z']))
+    controller_left_rot_x = list(map(float, info['controller_left_rot_x']))
+    controller_left_rot_y = list(map(float, info['controller_left_rot_y']))
+    controller_left_rot_z = list(map(float, info['controller_left_rot_z']))
+    controller_right_vel_x = list(map(float, info['controller_right_vel_x']))
+    controller_right_vel_y = list(map(float, info['controller_right_vel_y']))
+    controller_right_vel_z = list(map(float, info['controller_right_vel_z']))
+    controller_right_angularVel_x = list(map(float, info['controller_right_angularVel_x']))
+    controller_right_angularVel_y = list(map(float, info['controller_right_angularVel_y']))
+    controller_right_angularVel_z = list(map(float, info['controller_right_angularVel_z']))
+    controller_right_pos_x = list(map(float, info['controller_right_pos_x']))
+    controller_right_pos_y = list(map(float, info['controller_right_pos_y']))
+    controller_right_pos_z = list(map(float, info['controller_right_pos_z']))
+    controller_right_rot_x = list(map(float, info['controller_right_rot_x']))
+    controller_right_rot_y = list(map(float, info['controller_right_rot_y']))
+    controller_right_rot_z = list(map(float, info['controller_right_rot_z']))
 
     # peaks
     peaks_controller_left_vel_x, _ = find_peaks(controller_left_vel_x)
     peaks_controller_left_vel_y, _ = find_peaks(controller_left_vel_y)
     peaks_controller_left_vel_z, _ = find_peaks(controller_left_vel_z)
+    peaks_controller_left_angularVel_x, _ = find_peaks(controller_left_angularVel_x)
+    peaks_controller_left_angularVel_y, _ = find_peaks(controller_left_angularVel_y)
+    peaks_controller_left_angularVel_z, _ = find_peaks(controller_left_angularVel_z)
+    peaks_controller_left_pos_x, _ = find_peaks(controller_left_pos_x)
+    peaks_controller_left_pos_y, _ = find_peaks(controller_left_pos_y)
+    peaks_controller_left_pos_z, _ = find_peaks(controller_left_pos_z)
+    peaks_controller_left_rot_x, _ = find_peaks(controller_left_rot_x)
+    peaks_controller_left_rot_y, _ = find_peaks(controller_left_rot_y)
+    peaks_controller_left_rot_z, _ = find_peaks(controller_left_rot_z)
+    peaks_controller_right_vel_x, _ = find_peaks(controller_right_vel_x)
+    peaks_controller_right_vel_y, _ = find_peaks(controller_right_vel_y)
+    peaks_controller_right_vel_z, _ = find_peaks(controller_right_vel_z)
+    peaks_controller_right_angularVel_x, _ = find_peaks(controller_right_angularVel_x)
+    peaks_controller_right_angularVel_y, _ = find_peaks(controller_right_angularVel_y)
+    peaks_controller_right_angularVel_z, _ = find_peaks(controller_right_angularVel_z)
+    peaks_controller_right_pos_x, _ = find_peaks(controller_right_pos_x)
+    peaks_controller_right_pos_y, _ = find_peaks(controller_right_pos_y)
+    peaks_controller_right_pos_z, _ = find_peaks(controller_right_pos_z)
+    peaks_controller_right_rot_x, _ = find_peaks(controller_right_rot_x)
+    peaks_controller_right_rot_y, _ = find_peaks(controller_right_rot_y)
+    peaks_controller_right_rot_z, _ = find_peaks(controller_right_rot_z)
 
     res['peaks_controller_left_vel_x'] = len(peaks_controller_left_vel_x)
     res['peaks_controller_left_vel_y'] = len(peaks_controller_left_vel_y)
     res['peaks_controller_left_vel_z'] = len(peaks_controller_left_vel_z)
+    res['peaks_controller_left_angularVel_x'] = len(peaks_controller_left_angularVel_x)
+    res['peaks_controller_left_angularVel_y'] = len(peaks_controller_left_angularVel_y)
+    res['peaks_controller_left_angularVel_z'] = len(peaks_controller_left_angularVel_z)
+    res['peaks_controller_left_pos_x'] = len(peaks_controller_left_pos_x)
+    res['peaks_controller_left_pos_y'] = len(peaks_controller_left_pos_y)
+    res['peaks_controller_left_pos_z'] = len(peaks_controller_left_pos_z)
+    res['peaks_controller_left_rot_x'] = len(peaks_controller_left_rot_x)
+    res['peaks_controller_left_rot_y'] = len(peaks_controller_left_rot_y)
+    res['peaks_controller_left_rot_z'] = len(peaks_controller_left_rot_z)
+    res['peaks_controller_right_vel_x'] = len(peaks_controller_right_vel_x)
+    res['peaks_controller_right_vel_y'] = len(peaks_controller_right_vel_y)
+    res['peaks_controller_right_vel_z'] = len(peaks_controller_right_vel_z)
+    res['peaks_controller_right_angularVel_x'] = len(peaks_controller_right_angularVel_x)
+    res['peaks_controller_right_angularVel_y'] = len(peaks_controller_right_angularVel_y)
+    res['peaks_controller_right_angularVel_z'] = len(peaks_controller_right_angularVel_z)
+    res['peaks_controller_right_pos_x'] = len(peaks_controller_right_pos_x)
+    res['peaks_controller_right_pos_y'] = len(peaks_controller_right_pos_y)
+    res['peaks_controller_right_pos_z'] = len(peaks_controller_right_pos_z)
+    res['peaks_controller_right_rot_x'] = len(peaks_controller_right_rot_x)
+    res['peaks_controller_right_rot_y'] = len(peaks_controller_right_rot_y)
+    res['peaks_controller_right_rot_z'] = len(peaks_controller_right_rot_z)
 
     # means
     s_headset_pos_x = pandas.Series(data = headset_pos_x)
@@ -95,6 +200,27 @@ def preprocess(file_name: str, test_train: int):
     s_controller_left_vel_x = pandas.Series(data = controller_left_vel_x)
     s_controller_left_vel_y = pandas.Series(data = controller_left_vel_y)
     s_controller_left_vel_z = pandas.Series(data = controller_left_vel_z)
+    s_controller_left_angularVel_x = pandas.Series(data = controller_left_angularVel_x)
+    s_controller_left_angularVel_y = pandas.Series(data = controller_left_angularVel_y)
+    s_controller_left_angularVel_z = pandas.Series(data = controller_left_angularVel_z)
+    s_controller_left_pos_x = pandas.Series(data = controller_left_pos_x)
+    s_controller_left_pos_y = pandas.Series(data = controller_left_pos_y)
+    s_controller_left_pos_z = pandas.Series(data = controller_left_pos_z)
+    s_controller_left_rot_x = pandas.Series(data = controller_left_rot_x)
+    s_controller_left_rot_y = pandas.Series(data = controller_left_rot_y)
+    s_controller_left_rot_z = pandas.Series(data = controller_left_rot_z)
+    s_controller_right_vel_x = pandas.Series(data = controller_right_vel_x)
+    s_controller_right_vel_y = pandas.Series(data = controller_right_vel_y)
+    s_controller_right_vel_z = pandas.Series(data = controller_right_vel_z)
+    s_controller_right_angularVel_x = pandas.Series(data = controller_right_angularVel_x)
+    s_controller_right_angularVel_y = pandas.Series(data = controller_right_angularVel_y)
+    s_controller_right_angularVel_z = pandas.Series(data = controller_right_angularVel_z)
+    s_controller_right_pos_x = pandas.Series(data = controller_right_pos_x)
+    s_controller_right_pos_y = pandas.Series(data = controller_right_pos_y)
+    s_controller_right_pos_z = pandas.Series(data = controller_right_pos_z)
+    s_controller_right_rot_x = pandas.Series(data = controller_right_rot_x)
+    s_controller_right_rot_y = pandas.Series(data = controller_right_rot_y)
+    s_controller_right_rot_z = pandas.Series(data = controller_right_rot_z)
 
     res['mean_headset_pos_x'] = s_headset_pos_x.mean()
     res['mean_headset_pos_y'] = s_headset_pos_y.mean()
@@ -102,6 +228,27 @@ def preprocess(file_name: str, test_train: int):
     res['mean_controller_left_vel_x'] = s_controller_left_vel_x.mean()
     res['mean_controller_left_vel_y'] = s_controller_left_vel_y.mean()
     res['mean_controller_left_vel_z'] = s_controller_left_vel_z.mean()
+    res['mean_controller_left_angularVel_x'] = s_controller_left_angularVel_x.mean()
+    res['mean_controller_left_angularVel_y'] = s_controller_left_angularVel_y.mean()
+    res['mean_controller_left_angularVel_z'] = s_controller_left_angularVel_z.mean()
+    res['mean_controller_left_pos_x'] = s_controller_left_pos_x.mean()
+    res['mean_controller_left_pos_y'] = s_controller_left_pos_y.mean()
+    res['mean_controller_left_pos_z'] = s_controller_left_pos_z.mean()
+    res['mean_controller_left_rot_x'] = s_controller_left_rot_x.mean()
+    res['mean_controller_left_rot_y'] = s_controller_left_rot_y.mean()
+    res['mean_controller_left_rot_z'] = s_controller_left_rot_z.mean()
+    res['mean_controller_right_vel_x'] = s_controller_right_vel_x.mean()
+    res['mean_controller_right_vel_y'] = s_controller_right_vel_y.mean()
+    res['mean_controller_right_vel_z'] = s_controller_right_vel_z.mean()
+    res['mean_controller_right_angularVel_x'] = s_controller_right_angularVel_x.mean()
+    res['mean_controller_right_angularVel_y'] = s_controller_right_angularVel_y.mean()
+    res['mean_controller_right_angularVel_z'] = s_controller_right_angularVel_z.mean()
+    res['mean_controller_right_pos_x'] = s_controller_right_pos_x.mean()
+    res['mean_controller_right_pos_y'] = s_controller_right_pos_y.mean()
+    res['mean_controller_right_pos_z'] = s_controller_right_pos_z.mean()
+    res['mean_controller_right_rot_x'] = s_controller_right_rot_x.mean()
+    res['mean_controller_right_rot_y'] = s_controller_right_rot_y.mean()
+    res['mean_controller_right_rot_z'] = s_controller_right_rot_z.mean()
 
     # stds
     res['std_headset_pos_x'] = s_headset_pos_x.mean()
@@ -110,13 +257,34 @@ def preprocess(file_name: str, test_train: int):
     res['std_controller_left_vel_x'] = s_controller_left_vel_x.std()
     res['std_controller_left_vel_y'] = s_controller_left_vel_y.std()
     res['std_controller_left_vel_z'] = s_controller_left_vel_z.std()
+    res['std_controller_left_angularVel_x'] = s_controller_left_angularVel_x.std()
+    res['std_controller_left_angularVel_y'] = s_controller_left_angularVel_y.std()
+    res['std_controller_left_angularVel_z'] = s_controller_left_angularVel_z.std()
+    res['std_controller_left_pos_x'] = s_controller_left_pos_x.std()
+    res['std_controller_left_pos_y'] = s_controller_left_pos_y.std()
+    res['std_controller_left_pos_z'] = s_controller_left_pos_z.std()
+    res['std_controller_left_rot_x'] = s_controller_left_rot_x.std()
+    res['std_controller_left_rot_y'] = s_controller_left_rot_y.std()
+    res['std_controller_left_rot_z'] = s_controller_left_rot_z.std()
+    res['std_controller_right_vel_x'] = s_controller_right_vel_x.std()
+    res['std_controller_right_vel_y'] = s_controller_right_vel_y.std()
+    res['std_controller_right_vel_z'] = s_controller_right_vel_z.std()
+    res['std_controller_right_angularVel_x'] = s_controller_right_angularVel_x.std()
+    res['std_controller_right_angularVel_y'] = s_controller_right_angularVel_y.std()
+    res['std_controller_right_angularVel_z'] = s_controller_right_angularVel_z.std()
+    res['std_controller_right_pos_x'] = s_controller_right_pos_x.std()
+    res['std_controller_right_pos_y'] = s_controller_right_pos_y.std()
+    res['std_controller_right_pos_z'] = s_controller_right_pos_z.std()
+    res['std_controller_right_rot_x'] = s_controller_right_rot_x.std()
+    res['std_controller_right_rot_y'] = s_controller_right_rot_y.std()
+    res['std_controller_right_rot_z'] = s_controller_right_rot_z.std()
 
     # activity type
     res['user'] = file_name[0:3]
 
     return res
 
-# print(preprocess("CAR_01.csv"))
+# print(preprocess("CAR_01.csv", 0))
 
 def combine_files(dir: str, file_out: str, test_train: int):
     # create a dataframe from all files in Train
@@ -129,9 +297,8 @@ def combine_files(dir: str, file_out: str, test_train: int):
         data_dicts.append(data_dict)
 
     # field names
-    fields = ['peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z', 'mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z', 'std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z', 'std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z', 'user']
-    # fields = ['x_peaks', 'y_peaks', 'z_peaks', 'x_mean', 'y_mean', 'z_mean', 'x_std', 'y_std', 'z_std', 'user']
-
+    fields = ['peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'peaks_controller_left_angularVel_x', 'peaks_controller_left_angularVel_y', 'peaks_controller_left_angularVel_z', 'peaks_controller_left_pos_x', 'peaks_controller_left_pos_y', 'peaks_controller_left_pos_z', 'peaks_controller_left_rot_x', 'peaks_controller_left_rot_y', 'peaks_controller_left_rot_z', 'peaks_controller_right_vel_x', 'peaks_controller_right_vel_y', 'peaks_controller_right_vel_z', 'peaks_controller_right_angularVel_x', 'peaks_controller_right_angularVel_y', 'peaks_controller_right_angularVel_z', 'peaks_controller_right_pos_x', 'peaks_controller_right_pos_y', 'peaks_controller_right_pos_z', 'peaks_controller_right_rot_x', 'peaks_controller_right_rot_y', 'peaks_controller_right_rot_z','mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z','mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z','mean_controller_left_angularVel_x', 'mean_controller_left_angularVel_y', 'mean_controller_left_angularVel_z','mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z','mean_controller_left_rot_x', 'mean_controller_left_rot_y', 'mean_controller_left_rot_z','mean_controller_right_vel_x', 'mean_controller_right_vel_y', 'mean_controller_right_vel_z','mean_controller_right_angularVel_x', 'mean_controller_right_angularVel_y', 'mean_controller_right_angularVel_z','mean_controller_right_pos_x', 'mean_controller_right_pos_y', 'mean_controller_right_pos_z','mean_controller_right_rot_x', 'mean_controller_right_rot_y', 'mean_controller_right_rot_z','std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z','std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z','std_controller_left_angularVel_x', 'std_controller_left_angularVel_y', 'std_controller_left_angularVel_z','std_controller_left_pos_x', 'std_controller_left_pos_y', 'std_controller_left_pos_z','std_controller_left_rot_x', 'std_controller_left_rot_y', 'std_controller_left_rot_z','std_controller_right_vel_x', 'std_controller_right_vel_y', 'std_controller_right_vel_z','std_controller_right_angularVel_x', 'std_controller_right_angularVel_y', 'std_controller_right_angularVel_z','std_controller_right_pos_x', 'std_controller_right_pos_y', 'std_controller_right_pos_z','std_controller_right_rot_x', 'std_controller_right_rot_y', 'std_controller_right_rot_z','user']
+    
     # name of csv
     filename = file_out
 
@@ -144,7 +311,7 @@ def combine_files(dir: str, file_out: str, test_train: int):
         writer.writeheader()
         writer.writerows(data_dicts)
 
-# combine_files("Data/Lab3/Train", "train_data_summary.csv", 0)
+combine_files("Data/Lab3/Train", "train_data_summary.csv", 0)
 # combine_files("Data/Lab3/Validation", "train_data_summary.csv")
 
 def create_dtree(train_file: str):
@@ -155,7 +322,7 @@ def create_dtree(train_file: str):
     df['user'] = df['user'].map(d)
 
     # separate feature columns from target column
-    features = ['peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z', 'mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z', 'std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z', 'std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z']
+    features = ['peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'peaks_controller_left_angularVel_x', 'peaks_controller_left_angularVel_y', 'peaks_controller_left_angularVel_z', 'peaks_controller_left_pos_x', 'peaks_controller_left_pos_y', 'peaks_controller_left_pos_z', 'peaks_controller_left_rot_x', 'peaks_controller_left_rot_y', 'peaks_controller_left_rot_z', 'peaks_controller_right_vel_x', 'peaks_controller_right_vel_y', 'peaks_controller_right_vel_z', 'peaks_controller_right_angularVel_x', 'peaks_controller_right_angularVel_y', 'peaks_controller_right_angularVel_z', 'peaks_controller_right_pos_x', 'peaks_controller_right_pos_y', 'peaks_controller_right_pos_z', 'peaks_controller_right_rot_x', 'peaks_controller_right_rot_y', 'peaks_controller_right_rot_z','mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z','mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z','mean_controller_left_angularVel_x', 'mean_controller_left_angularVel_y', 'mean_controller_left_angularVel_z','mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z','mean_controller_left_rot_x', 'mean_controller_left_rot_y', 'mean_controller_left_rot_z','mean_controller_right_vel_x', 'mean_controller_right_vel_y', 'mean_controller_right_vel_z','mean_controller_right_angularVel_x', 'mean_controller_right_angularVel_y', 'mean_controller_right_angularVel_z','mean_controller_right_pos_x', 'mean_controller_right_pos_y', 'mean_controller_right_pos_z','mean_controller_right_rot_x', 'mean_controller_right_rot_y', 'mean_controller_right_rot_z','std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z','std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z','std_controller_left_angularVel_x', 'std_controller_left_angularVel_y', 'std_controller_left_angularVel_z','std_controller_left_pos_x', 'std_controller_left_pos_y', 'std_controller_left_pos_z','std_controller_left_rot_x', 'std_controller_left_rot_y', 'std_controller_left_rot_z','std_controller_right_vel_x', 'std_controller_right_vel_y', 'std_controller_right_vel_z','std_controller_right_angularVel_x', 'std_controller_right_angularVel_y', 'std_controller_right_angularVel_z','std_controller_right_pos_x', 'std_controller_right_pos_y', 'std_controller_right_pos_z','std_controller_right_rot_x', 'std_controller_right_rot_y', 'std_controller_right_rot_z']
     
     X = df[features].values
     y  = df['user']
