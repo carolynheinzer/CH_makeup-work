@@ -37,19 +37,25 @@ def extract(file_name: str, test_train: int):
     line1 = f.readline()
 
     info = {}
-    info['x'] = []
-    info['y'] = []
-    info['z'] = []
+    info['headset_pos_x'] = []
+    info['headset_pos_y'] = []
+    info['headset_pos_z'] = []
+    info['controller_left_vel_x'] = []
+    info['controller_left_vel_y'] = []
+    info['controller_left_vel_z'] = []
 
     # data: time,headset_vel.x,headset_vel.y,headset_vel.z,headset_angularVel.x,headset_angularVel.y,headset_angularVel.z,headset_pos.x,headset_pos.y,headset_pos.z,headset_rot.x,headset_rot.y,headset_rot.z,controller_left_vel.x,controller_left_vel.y,controller_left_vel.z,controller_left_angularVel.x,controller_left_angularVel.y,controller_left_angularVel.z,controller_left_pos.x,controller_left_pos.y,controller_left_pos.z,controller_left_rot.x,controller_left_rot.y,controller_left_rot.z,controller_right_vel.x,controller_right_vel.y,controller_right_vel.z,controller_right_angularVel.x,controller_right_angularVel.y,controller_right_angularVel.z,controller_right_pos.x,controller_right_pos.y,controller_right_pos.z,controller_right_rot.x,controller_right_rot.y,controller_right_rot.z
     # want time, controller_left_vel.x, controller_left_vel.y, controller_left_vel.z
-    # indices [0, 13, 14, 15]
+    # indices [7,8,9,13, 14, 15]
 
     for line in f.readlines():
         lst = line.split(",")
-        info['x'].append(lst[13])
-        info['y'].append(lst[14])
-        info['z'].append(lst[15])
+        info['headset_pos_x'].append(lst[7])
+        info['headset_pos_y'].append(lst[8])
+        info['headset_pos_z'].append(lst[9])
+        info['controller_left_vel_x'].append(lst[13])
+        info['controller_left_vel_y'].append(lst[14])
+        info['controller_left_vel_z'].append(lst[15])
 
     f.close()
     return info
@@ -66,32 +72,44 @@ def preprocess(file_name: str, test_train: int):
     res = {}
     
     # x, y, and z components of v
-    v_x = list(map(float, info['x']))
-    v_y = list(map(float, info['y']))
-    v_z = list(map(float, info['z']))
+    headset_pos_x = list(map(float, info['headset_pos_x']))
+    headset_pos_y = list(map(float, info['headset_pos_y']))
+    headset_pos_z = list(map(float, info['headset_pos_z']))
+    controller_left_vel_x = list(map(float, info['controller_left_vel_x']))
+    controller_left_vel_y = list(map(float, info['controller_left_vel_y']))
+    controller_left_vel_z = list(map(float, info['controller_left_vel_z']))
 
     # peaks
-    peaks_x, _ = find_peaks(v_x)
-    peaks_y, _ = find_peaks(v_y)
-    peaks_z, _ = find_peaks(v_z)
+    peaks_controller_left_vel_x, _ = find_peaks(controller_left_vel_x)
+    peaks_controller_left_vel_y, _ = find_peaks(controller_left_vel_y)
+    peaks_controller_left_vel_z, _ = find_peaks(controller_left_vel_z)
 
-    res['x_peaks'] = len(peaks_x)
-    res['y_peaks'] = len(peaks_y)
-    res['z_peaks'] = len(peaks_z)
+    res['peaks_controller_left_vel_x'] = len(peaks_controller_left_vel_x)
+    res['peaks_controller_left_vel_y'] = len(peaks_controller_left_vel_y)
+    res['peaks_controller_left_vel_z'] = len(peaks_controller_left_vel_z)
 
     # means
-    s_x = pandas.Series(data = v_x)
-    s_y = pandas.Series(data = v_y)
-    s_z = pandas.Series(data = v_z)
+    s_headset_pos_x = pandas.Series(data = headset_pos_x)
+    s_headset_pos_y = pandas.Series(data = headset_pos_y)
+    s_headset_pos_z = pandas.Series(data = headset_pos_z)
+    s_controller_left_vel_x = pandas.Series(data = controller_left_vel_x)
+    s_controller_left_vel_y = pandas.Series(data = controller_left_vel_y)
+    s_controller_left_vel_z = pandas.Series(data = controller_left_vel_z)
 
-    res['x_mean'] = s_x.mean()
-    res['y_mean'] = s_y.mean()
-    res['z_mean'] = s_z.mean()
+    res['mean_headset_pos_x'] = s_headset_pos_x.mean()
+    res['mean_headset_pos_y'] = s_headset_pos_y.mean()
+    res['mean_headset_pos_z'] = s_headset_pos_z.mean()
+    res['mean_controller_left_vel_x'] = s_controller_left_vel_x.mean()
+    res['mean_controller_left_vel_y'] = s_controller_left_vel_y.mean()
+    res['mean_controller_left_vel_z'] = s_controller_left_vel_z.mean()
 
     # stds
-    res['x_std'] = s_x.std()
-    res['y_std'] = s_y.std()
-    res['z_std'] = s_z.std()
+    res['std_headset_pos_x'] = s_headset_pos_x.mean()
+    res['std_headset_pos_y'] = s_headset_pos_y.mean()
+    res['std_headset_pos_z'] = s_headset_pos_z.mean()
+    res['std_controller_left_vel_x'] = s_controller_left_vel_x.std()
+    res['std_controller_left_vel_y'] = s_controller_left_vel_y.std()
+    res['std_controller_left_vel_z'] = s_controller_left_vel_z.std()
 
     # activity type
     res['user'] = file_name[0:3]
@@ -111,7 +129,8 @@ def combine_files(dir: str, file_out: str, test_train: int):
         data_dicts.append(data_dict)
 
     # field names
-    fields = ['x_peaks', 'y_peaks', 'z_peaks', 'x_mean', 'y_mean', 'z_mean', 'x_std', 'y_std', 'z_std', 'user']
+    fields = ['peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z', 'mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z', 'std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z', 'std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z', 'user']
+    # fields = ['x_peaks', 'y_peaks', 'z_peaks', 'x_mean', 'y_mean', 'z_mean', 'x_std', 'y_std', 'z_std', 'user']
 
     # name of csv
     filename = file_out
@@ -136,8 +155,8 @@ def create_dtree(train_file: str):
     df['user'] = df['user'].map(d)
 
     # separate feature columns from target column
-    features = ['x_peaks', 'y_peaks', 'z_peaks', 'x_mean', 'y_mean', 'z_mean', 'x_std', 'y_std', 'z_std']
-
+    features = ['peaks_controller_left_vel_x', 'peaks_controller_left_vel_y', 'peaks_controller_left_vel_z', 'mean_headset_pos_x', 'mean_headset_pos_y', 'mean_headset_pos_z', 'mean_controller_left_vel_x', 'mean_controller_left_vel_y', 'mean_controller_left_vel_z', 'std_headset_pos_x', 'std_headset_pos_y', 'std_headset_pos_z', 'std_controller_left_vel_x', 'std_controller_left_vel_y', 'std_controller_left_vel_z']
+    
     X = df[features].values
     y  = df['user']
 
@@ -167,7 +186,7 @@ def predict_shallow(sensor_data: str) -> str:
 
     input = preprocess(sensor_data, 1)
     input_vals = [val for key, val in input.items() if key != 'user']
-    print(input_vals)
+    # print(input_vals)
     print(dtree.predict_proba([input_vals]))
 
     user = dtree.predict([input_vals])
@@ -194,7 +213,7 @@ def predict_shallow_folder(data_folder: str, output: str):
     # actual values
     actual = []
     for file in data_files:
-        print(file)
+        # print(file)
         actual.append(file[21:24])
 
     actual_vals = []
@@ -217,14 +236,14 @@ def predict_shallow_folder(data_folder: str, output: str):
         elif ("URU" in label):
             predicted_vals.append(2)
 
-    print(predicted_vals)
-    print(actual_vals)
+    # print(predicted_vals)
+    # print(actual_vals)
 
     with open(output, "w+") as output_file:
         output_file.write("\n".join(labels))
 
     target_names = ["CAR", "QUI", "URU"]
-    print(classification_report(actual_vals, predicted_vals))
+    # print(classification_report(actual_vals, predicted_vals))
 
 if __name__ == "__main__":
     # Parse arguments to determine whether to predict on a file or a folder
