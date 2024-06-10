@@ -153,9 +153,8 @@ def combine_files(dir: str, file_out: str, code: int):
 
 # combine_files("Data/Lab3/Train", "1-combined.csv", 0)
 
-def create_dtree(train_file: str):
+def create_classifier(train_file: str):
     # create the actual shallow learning mechanism
-    # ...is it even a dtree anymore??
 
     # create dataframe and ensure all data is numbers
     d = {'CAR': 0, 'QUI': 1, "URU": 2}
@@ -202,7 +201,7 @@ def create_dtree(train_file: str):
 def predict_shallow(sensor_data: str) -> str:
     # predict the user for one data file
 
-    clf = create_dtree("1-combined.csv")
+    clf = create_classifier("1-combined.csv")
 
     input = preprocess(sensor_data, 1)
     input_vals = [val for key, val in input.items() if key != 'user']
