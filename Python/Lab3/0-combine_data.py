@@ -46,6 +46,7 @@ def to_dict(file_name: str, code: int):
             info[keys[i]].append(float(el))
 
     f.close()
+    print(type(info))
     return info
 
 # print(to_dict("Data/Lab3/Train/CAR_01.csv"))

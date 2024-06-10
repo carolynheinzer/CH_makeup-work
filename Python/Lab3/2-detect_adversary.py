@@ -66,10 +66,10 @@ def preprocess(file_name: str, code: int):
     # results
     res = {}
 
-    rel_features = ['headset_pos_x', 'headset_pos_y', 'headset_pos_z', 'controller_left_vel_x', 'controller_left_vel_y', 'controller_left_vel_z', 'controller_left_pos_x', 'controller_left_pos_y', 'controller_left_pos_z']
+    rel_features = ['headset_pos_x', 'headset_pos_y', 'headset_pos_y', 'controller_left_vel_x', 'controller_left_vel_y', 'controller_left_vel_z', 'controller_left_pos_x', 'controller_left_pos_y', 'controller_left_pos_z']
 
-    headset_vel_z = info['headset_vel_z']
-    headset_pos_z = info['headset_pos_z']
+    headset_vel_y = info['headset_vel_y']
+    headset_pos_y = info['headset_pos_y']
 
     controller_left_vel_x = info['controller_left_vel_x']
     controller_left_vel_y = info['controller_left_vel_y']
@@ -79,8 +79,8 @@ def preprocess(file_name: str, code: int):
     controller_left_pos_z = info['controller_left_pos_z']
 
     # series
-    s_headset_vel_z = pandas.Series(data = headset_vel_z)
-    s_headset_pos_z = pandas.Series(data = headset_pos_z)
+    s_headset_vel_y = pandas.Series(data = headset_vel_y)
+    s_headset_pos_y = pandas.Series(data = headset_pos_y)
 
     s_controller_left_vel_x = pandas.Series(data = controller_left_vel_x)
     s_controller_left_vel_y = pandas.Series(data = controller_left_vel_y)
@@ -89,11 +89,11 @@ def preprocess(file_name: str, code: int):
     s_controller_left_pos_y = pandas.Series(data = controller_left_pos_y)
     s_controller_left_pos_z = pandas.Series(data = controller_left_pos_z)
 
-    # headset_vel_z - max
-    res['max_headset_vel_z'] = s_headset_vel_z.max()
+    # headset_vel_y - max
+    res['max_headset_vel_y'] = s_headset_vel_y.max()
 
-    # headset_pos_z - max
-    res['max_headset_pos_z'] = s_headset_pos_z.max()
+    # headset_pos_y - max
+    res['max_headset_pos_y'] = s_headset_pos_y.max()
 
     # controller_left_vel_x,y,z - max, min
     res['max_controller_left_vel_x'] = s_controller_left_vel_x.max()
@@ -140,7 +140,7 @@ def combine_files(dir: str, file_out: str, code: int):
         data_dict = preprocess(file, code)
         data_dicts.append(data_dict)
 
-    fields = ['max_headset_vel_z', 'max_headset_pos_z', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z', 'user']
+    fields = ['max_headset_vel_y', 'max_headset_pos_y', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z', 'user']
 
     with open(file_out, "w") as csvfile:
         # create a csv dict writer object
@@ -164,7 +164,7 @@ def create_dtree(train_file: str):
     df['user'] = df['user'].map(d)
 
     # separate feature columns from target column
-    features = ['max_headset_vel_z', 'max_headset_pos_z', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z']
+    features = ['max_headset_vel_y', 'max_headset_pos_y', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z']
 
     X = df[features].values
     y  = df['user']
@@ -196,12 +196,7 @@ def predict_shallow(sensor_data: str) -> str:
     for item in class_probs:
         if (item != mx) and (item != mn):
             mid = item
-
-    # print(mx - mid)   
-
-    # print(min(abs(class_probs[0] - class_probs[1]), abs(class_probs[2] - class_probs[1]), abs(class_probs[0] - class_probs[2])))
-    # if abs(class_probs[0] - class_probs[1]) or abs(class_probs[2] - class_probs[1]) or abs(class_probs[0] - class_probs[0]):
-
+            
     if ((mx - mid) >= 0.3):
         user = clf.predict([input_vals])
         # user = dtree.predict([input_vals])
@@ -234,6 +229,7 @@ def predict_shallow_folder(data_folder: str, output: str):
         # print(file)
         actual.append(file[21:24])
 
+    # print(actual)
     actual_vals = []
 
     for el in actual:
@@ -256,7 +252,7 @@ def predict_shallow_folder(data_folder: str, output: str):
         elif ("URU" in label):
             predicted_vals.append(2)
         else:
-            actual_vals.append(3)
+            predicted_vals.append(3)
 
     # print(predicted_vals)
     # print(actual_vals)
@@ -265,7 +261,7 @@ def predict_shallow_folder(data_folder: str, output: str):
         output_file.write("\n".join(labels))
 
     target_names = ["CAR", "QUI", "URU"]
-    # print(classification_report(actual_vals, predicted_vals))
+    print(classification_report(actual_vals, predicted_vals))
 
 if __name__ == "__main__":
     # Parse arguments to determine whether to predict on a file or a folder
