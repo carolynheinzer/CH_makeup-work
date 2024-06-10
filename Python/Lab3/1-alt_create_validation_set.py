@@ -37,13 +37,21 @@ while (0 <= i < 18):
     elif (12 <= i < 18):
         curr_dir = "Urunna_data" """
 
+"""while (0 <= i < 30):
+    if (0 <= i < 9):
+        curr_dir = "Carolyn_data"
+    elif (10 <= i < 19):
+        curr_dir = "Quinn_data"
+    elif (20 <= i < 29):
+        curr_dir = "Urunna_data" """
+
 while (0 <= i < 15):
     if (0 <= i < 4):
         curr_dir = "Carolyn_data"
     elif (5 <= i < 9):
         curr_dir = "Quinn_data"
     elif (10 <= i < 14):
-        curr_dir = "Urunna_data"
+        curr_dir = "Urunna_data" 
 
     f = random.choice(os.listdir(curr_dir))
 

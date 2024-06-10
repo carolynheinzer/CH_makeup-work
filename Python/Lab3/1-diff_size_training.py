@@ -235,8 +235,8 @@ def predict_shallow_folder(data_folder: str, output: str):
         output_file.write("\n".join(labels))
 
     target_names = ["CAR", "QUI", "URU"]
-    print(actual_vals)
-    print(predicted_vals)
+    # print(actual_vals)
+    # print(predicted_vals)
     print(classification_report(actual_vals, predicted_vals))
 
 if __name__ == "__main__":
