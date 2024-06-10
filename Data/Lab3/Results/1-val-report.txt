@@ -1,0 +1,36 @@
+CAR
+CAR
+CAR
+CAR
+CAR
+CAR
+CAR
+CAR
+CAR
+CAR
+QUI
+QUI
+QUI
+QUI
+QUI
+QUI
+QUI
+QUI
+CAR
+QUI
+QUI
+URU
+URU
+URU
+URU
+URU
+URU
+              precision    recall  f1-score   support
+
+           0       0.91      1.00      0.95        10
+           1       0.80      1.00      0.89         8
+           2       1.00      0.67      0.80         9
+
+    accuracy                           0.89        27
+   macro avg       0.90      0.89      0.88        27
+weighted avg       0.91      0.89      0.88        27
