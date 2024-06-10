@@ -66,10 +66,11 @@ def preprocess(file_name: str, code: int):
     # results
     res = {}
 
-    rel_features = ['headset_pos_x', 'headset_pos_y', 'headset_pos_z', 'controller_left_vel_x', 'controller_left_vel_y', 'controller_left_vel_z', 'controller_left_pos_x', 'controller_left_pos_y', 'controller_left_pos_z']
+    # rel_features = ['headset_pos_x', 'headset_pos_y', 'headset_pos_y', 'controller_left_vel_x', 'controller_left_vel_y', 'controller_left_vel_z', 'controller_left_pos_x', 'controller_left_pos_y', 'controller_left_pos_z']
 
-    headset_vel_z = info['headset_vel_z']
-    headset_pos_z = info['headset_pos_z']
+    headset_vel_y = info['headset_vel_y']
+    headset_pos_y = info['headset_pos_y']
+    # print(headset_pos_y)
 
     controller_left_vel_x = info['controller_left_vel_x']
     controller_left_vel_y = info['controller_left_vel_y']
@@ -79,8 +80,8 @@ def preprocess(file_name: str, code: int):
     controller_left_pos_z = info['controller_left_pos_z']
 
     # series
-    s_headset_vel_z = pandas.Series(data = headset_vel_z)
-    s_headset_pos_z = pandas.Series(data = headset_pos_z)
+    s_headset_vel_y = pandas.Series(data = headset_vel_y)
+    s_headset_pos_y = pandas.Series(data = headset_pos_y)
 
     s_controller_left_vel_x = pandas.Series(data = controller_left_vel_x)
     s_controller_left_vel_y = pandas.Series(data = controller_left_vel_y)
@@ -89,11 +90,11 @@ def preprocess(file_name: str, code: int):
     s_controller_left_pos_y = pandas.Series(data = controller_left_pos_y)
     s_controller_left_pos_z = pandas.Series(data = controller_left_pos_z)
 
-    # headset_vel_z - max
-    res['max_headset_vel_z'] = s_headset_vel_z.max()
+    # headset_vel_y - max
+    res['max_headset_vel_y'] = s_headset_vel_y.max()
 
-    # headset_pos_z - max
-    res['max_headset_pos_z'] = s_headset_pos_z.max()
+    # headset_pos_y - max
+    res['max_headset_pos_y'] = s_headset_pos_y.max()
 
     # controller_left_vel_x,y,z - max, min
     res['max_controller_left_vel_x'] = s_controller_left_vel_x.max()
@@ -140,7 +141,7 @@ def combine_files(dir: str, file_out: str, code: int):
         data_dict = preprocess(file, code)
         data_dicts.append(data_dict)
 
-    fields = ['max_headset_vel_z', 'max_headset_pos_z', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z', 'user']
+    fields = ['max_headset_vel_y', 'max_headset_pos_y', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z', 'user']
 
     with open(file_out, "w") as csvfile:
         # create a csv dict writer object
@@ -151,7 +152,7 @@ def combine_files(dir: str, file_out: str, code: int):
         for data_dict in data_dicts:
             writer.writerow(data_dict)
 
-# combine_files("Data/Lab3/Train", "1-combined.csv", 0)
+combine_files("Data/Lab3/Train", "1-combined.csv", 0)
 
 def create_classifier(train_file: str):
     # create the actual shallow learning mechanism
@@ -163,7 +164,7 @@ def create_classifier(train_file: str):
     df['user'] = df['user'].map(d)
 
     # separate feature columns from target column
-    features = ['max_headset_vel_z', 'max_headset_pos_z', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z']
+    features = ['max_headset_vel_y', 'max_headset_pos_y', 'max_controller_left_vel_x', 'max_controller_left_vel_y', 'max_controller_left_vel_z', 'min_controller_left_vel_x', 'min_controller_left_vel_y', 'min_controller_left_vel_z', 'max_controller_left_pos_x', 'max_controller_left_pos_y', 'max_controller_left_pos_z', 'mean_controller_left_pos_x', 'mean_controller_left_pos_y', 'mean_controller_left_pos_z', 'min_controller_left_pos_x', 'min_controller_left_pos_y', 'min_controller_left_pos_z', 'diff_controller_left_pos_z']
 
     X = df[features].values
     y  = df['user']
